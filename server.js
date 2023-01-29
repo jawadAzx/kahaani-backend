@@ -26,7 +26,9 @@ app.use(cors());
 app.use("/api/admin", adminRoutes);
 app.use("/api/getHighlights", highlightRoutes)
 app.use("/api/story", dataRoutes)
-
+app.get('/', (req, res) => {
+    res.sendStatus(200)
+  })
 ///middleware err this must always be at the end 
 app.use(midErr);
 
