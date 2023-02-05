@@ -72,11 +72,24 @@ export const getStories = async (req, res) => {
     try {
         getDocs(collection(db, "Library")).then((querySnapshot) => {
             let dataItems = [];
+            let genres = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-
+                genres.push(data.genre);
                 dataItems.push(data);
             });
+            // arrange dataitems based on genre such that all stories of the same genre are grouped together
+            let newObj = {};
+            for (let i = 0; i < dataItems.length; i++) {
+                if (newObj[dataItems[i].genre]) {
+                    newObj[dataItems[i].genre].push(dataItems[i]);
+                } else {
+                    newObj[dataItems[i].genre] = [dataItems[i]];
+                }
+            }
+            dataItems = newObj;
+            console.log(dataItems);
+
             res.status(200).json({
                 success: true,
                 message: "stories fetched",

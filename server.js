@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import multer from 'multer';
 // Configuring dotenv
 dotenv.config()
-var multerdata = multer()
+// const upload = multer({ dest: './uploads/' })
 
 const app = express();
 
@@ -19,6 +19,7 @@ const app = express();
 // use all controllers(APIs) here
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(upload.array());
 app.use(cookieParser());
 app.use(cors());
 //http://localhost:8000/api/admin/login This will be the route for the login 

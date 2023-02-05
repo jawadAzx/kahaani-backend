@@ -194,6 +194,7 @@ async function formatData(data) {
 }
 
 export const converter = async (req, res) => {
+    console.log("in converter ")
     const data = await req.file
     mm.parseBuffer(data.buffer, data.mimetype)
         .then(async metadata => {

@@ -1,10 +1,14 @@
 import { db } from "./firebaseConfig.js";
 import { collection, Firestore, getDoc, addDoc, query, where, doc, setDoc } from "firebase/firestore";
 import { storage } from "./firebaseConfig.js";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { ref, getDownloadURL} from "firebase/storage";
 import { handleAsyncErr } from "./middleware/handleAsyncErr.js";
 import HandErr from "./utils/err.js";
+import multer from 'multer'
 import { async } from "@firebase/util";
+
+var upload = multer()
+
 
 export const getLibraryData = () => {
   return getDocs(collection(db, "Library")).then((querySnapshot) => {
@@ -63,35 +67,52 @@ export const getLibraryData = () => {
 };
 // function to upload a story to firebase
 // takes title, audio, file and highlightText as parameters
-export const uploadStory = async (title, audio, text) => {
+// export const uploadStory = handleAsyncErr(async (req,res,next) => {
 
-  const file = audio
-  const storageRef = ref(storage, `files/${file.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-  // uploading the file
-  uploadTask.on("state_changed",
-    (snapshot) => {
-      const progress =
-        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-      console.log("Upload is " + progress + "% done");
-    },
-    (error) => {
-      alert(error);
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-        console.log(downloadURL);
-        const docRef = await addDoc(collection(db, "Library"),
-          {
-            title,
-            audio: downloadURL,
-            text,
-          });
+//   console.log(req.body)
+//   // const {text,audio,title,image} = req.form
+//   // console.log(req.form)
 
-      });
-    }
-  );
-  // return once upload is complete
-  return uploadTask;
+//   if (!text || !audio || !title || !image)
+//   {
+//     return next(new HandErr("Some fields are missing"),400)
+//   }
+//   const file = audio
+//   const file1 = image
+//   const storageRef = ref(storage, `files/${file.name}`);
+//   const imageRef = ref(storage,`files/${file1.name}`)
+//   const uploadTask = uploadBytesResumable(storageRef, file);
+  
+//   uploadBytes(imageRef,file1).then((snapshot)=>{
+//     console.log("uploaded the file")
+//   })
+//   // uploading the file
+//   uploadTask.on("state_changed",
+//     (snapshot) => {
+//       const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//       console.log("Upload is " + progress + "% done");
+//     },
+//     (error) => {
+//       console.log(error);
+//     },
+//     () => {
+//       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+//         console.log(downloadURL);
+//         const docRef = await addDoc(collection(db, "Library"),
+//           {
+//             title: title,
+//             audio: downloadURL,
+//             text: text,
+//             image: image
+//           });
 
-}
+//       });
+//       res.status(200).json({
+//         success: true,
+//         message: "successfully uploaded the file",
+//       })
+//     }
+//   );
+//   // return once upload is complete
+//   // return uploadTask;
+// }
